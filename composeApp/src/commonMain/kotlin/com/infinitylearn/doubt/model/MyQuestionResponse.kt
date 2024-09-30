@@ -1,8 +1,10 @@
 package com.infinitylearn.doubt.model
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class MyQuestionResponse(
     @SerialName("count")
     val count: Int,
@@ -13,6 +15,7 @@ data class MyQuestionResponse(
     @SerialName("success")
     val success: Boolean
 ) {
+    @Serializable
     data class QuestionData(
         @SerialName("active")
         val active: Boolean? = false,
@@ -72,13 +75,14 @@ data class MyQuestionResponse(
         @SerialName("askFeedback") var askFeedback: Boolean? = null,
         @SerialName("assignedTo") val assignedTo: Long? = null,
     ) {
+        @Serializable
         data class DismissedDoubt(
             @SerialName("isdoubtEditable")
             val isdoubtEditable: Boolean,
             @SerialName("reason")
             val reason: String
         )
-
+        @Serializable
         data class OcrResponse(
             @SerialName("auto_rotate_confidence")
             val autoRotateConfidence: Double,
@@ -98,13 +102,13 @@ data class MyQuestionResponse(
             val isHandwritten: Boolean,
             @SerialName("is_printed")
             val isPrinted: Boolean,
-            @SerialName("line_data")
-            val lineData: List<Any>,
+
             @SerialName("request_id")
             val requestId: String,
             @SerialName("text")
             val text: String
         ) {
+            @Serializable
             data class Data(
                 @SerialName("type")
                 val type: String,
@@ -113,7 +117,7 @@ data class MyQuestionResponse(
             )
         }
     }
-
+    @Serializable
     data class Pagination(
         @SerialName("currentPage")
         val currentPage: Int,

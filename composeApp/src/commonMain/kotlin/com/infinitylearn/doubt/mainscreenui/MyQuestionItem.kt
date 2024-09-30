@@ -19,14 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,9 +41,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun QuestionItem(questionData: MyQuestionResponse.QuestionData) {
+fun QuestionItem(questionData: MyQuestionResponse.QuestionData, platformName: String) {
 
-
+    println("====================="+questionData.createdTime)
     Box(modifier = Modifier.padding(15.dp)) {
         Box(
             modifier = Modifier
@@ -81,7 +77,7 @@ fun QuestionItem(questionData: MyQuestionResponse.QuestionData) {
                     )
 
 
-                    FeedbackStatus()
+                    FeedbackStatus(questionData)
                 }
 
                 QuestionTextImage(
@@ -97,7 +93,7 @@ fun QuestionItem(questionData: MyQuestionResponse.QuestionData) {
 }
 
 @Composable
-fun FeedbackStatus() {
+fun FeedbackStatus(questionData: MyQuestionResponse.QuestionData) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +103,7 @@ fun FeedbackStatus() {
     ) {
         // Text equivalent to TextView with background and padding
         Text(
-            text = "Feedback Pending", // Replace with actual string resource
+            text = questionData.doubtCardStatus.toString(), // Replace with actual string resource
             color = Color(0xffC4A200), // Text color
             fontSize = 10.sp, // Text size
             fontWeight = FontWeight.Bold, // Font weight to match Montserrat bold
@@ -155,7 +151,7 @@ fun QuestionTextImage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Text component for question text
-        println(questionImageUrl)
+
         if (imageDoubt == true) {
 
             CoilImage(

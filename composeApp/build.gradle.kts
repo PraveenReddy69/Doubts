@@ -3,19 +3,25 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
+import java.util.Properties
+import java.io.FileInputStream
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-
-    kotlin("plugin.serialization") version "2.0.20"
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
+
+
+val PropertiesFile = rootProject.file("composeApp/doubts.properties")
+val properties = Properties()
+properties.load(FileInputStream(PropertiesFile))
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
+   /* wasmJs {
         moduleName = "composeApp"
         browser {
             val projectDirPath = project.projectDir.path
@@ -30,7 +36,7 @@ kotlin {
             }
         }
         binaries.executable()
-    }
+    }*/
     
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -51,13 +57,13 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         val desktopMain by getting{
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
-
+                implementation(libs.ktor.client.okhttp)
             }
         }
         
@@ -66,6 +72,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             api(libs.androidx.core.ktx.v1120)
+            implementation(libs.bundles.ktor)
+            implementation(libs.ktor.client.okhttp)
 
         }
         commonMain.dependencies {
@@ -79,8 +87,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation (libs.kotlinx.serialization.json)
             implementation(libs.landscapist.coil3)
+            implementation(libs.bundles.ktor)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.firebase.database)
+            implementation(libs.firebase.database.ktx)
         }
-
+        nativeMain.dependencies {
+            implementation(libs.bundles.ktor)
+            implementation(libs.ktor.client.darwin)
+        }
     }
 }
 
@@ -115,10 +130,37 @@ android {
     }
     buildFeatures {
         compose = true
+        dataBinding = true
+        viewBinding = true
+        buildConfig = true
     }
+
+    flavorDimensions += "infinity"
+
+    productFlavors {
+        create("prod") {
+            dimension = "infinity"
+            buildConfigField("String", "DOUBTS_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+        }
+
+        create("preprod") {
+            dimension = "infinity"
+            buildConfigField("String", "AIMENTOR_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+        }
+
+        create("staging") {
+            dimension = "infinity"
+            buildConfigField("String", "AIMENTOR_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+        }
+    }
+
     dependencies {
         debugImplementation(compose.uiTooling)
     }
+}
+dependencies {
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.database.ktx)
 }
 
 compose.desktop {
