@@ -29,8 +29,7 @@ import androidx.compose.ui.unit.sp
 
 import com.infinitylearn.doubt.model.MyQuestionResponse
 import com.infinitylearn.doubt.utils.AppFontFamily
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.coil3.CoilImage
+
 import doubts.composeapp.generated.resources.Res
 import doubts.composeapp.generated.resources.ic_doubts_bookmarks_unselected
 import doubts.composeapp.generated.resources.ic_maths_new
@@ -154,14 +153,14 @@ fun QuestionTextImage(
 
         if (imageDoubt == true) {
 
-            CoilImage(
+           /* CoilImage(
                 modifier = Modifier.fillMaxWidth(),
                 imageModel = { questionImageUrl }, // loading a network image or local resource using an URL.
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
                 )
-            )
+            )*/
 
         } else {
 
