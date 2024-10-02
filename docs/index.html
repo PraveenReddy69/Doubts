@@ -6,11 +6,12 @@
     <title>Doubts</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module">
+        import { /* your exports from skiko.mjs */ } from './skiko.mjs'; // Import necessary functions
+
         async function loadWasm() {
             const response = await fetch('./composeApp.wasm'); // Fetch the WASM file
             const { instance } = await WebAssembly.instantiateStreaming(response, {
-                // Import your JavaScript functions here
-                js_code: { /* your imports here */ }
+                js_code: { /* your JavaScript functions to import */ }
             });
             // Access exported functions from the WebAssembly module
             console.log(instance.exports);
