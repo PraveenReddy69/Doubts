@@ -4,41 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doubts</title>
-    <link type="text/css" rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import * as skiko from './skiko.mjs'; // Adjust the path as necessary
+
+        async function loadWasm() {
+            const response = await fetch('composeApp.wasm');
+            const buffer = await response.arrayBuffer();
+            const module = await WebAssembly.instantiate(buffer, {
+                js_code: {
+                    print: (message) => {
+                        document.getElementById('output').innerText += message + '\n';
+                    },
+                    // Other functions from skiko can be included here
+                    ...skiko // Spread the functions from skiko.mjs
+                }
+            });
+            module.instance.exports.start(); // Call the start function in your WASM module
+        }
+
+        loadWasm();
+    </script>
 </head>
 <body>
 <h1>Welcome to the Doubts WASM App</h1>
 <div id="output"></div>
-<script type="module">
-    async function loadWasm() {
-        try {
-            const response = await fetch('composeApp.wasm');
-            if (!response.ok) throw new Error('Failed to load WASM');
-            const wasm = await response.arrayBuffer();
-
-            const imports = {
-                js_code: {
-                    // Add any JavaScript functions that your WASM module needs here
-                    print: (message) => {
-                        document.getElementById('output').innerText += message + '\n';
-                    }
-                }
-            };
-
-            const { instance } = await WebAssembly.instantiate(wasm, imports);
-
-            // Call an exported function from your WASM module
-            if (instance.exports.main) {
-                instance.exports.main(); // Ensure this function exists in your WASM
-            } else {
-                console.error('No exported main function found in WASM');
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    window.onload = loadWasm;
-</script>
 </body>
 </html>
