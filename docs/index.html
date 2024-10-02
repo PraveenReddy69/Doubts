@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doubts - WASM</title>
     <link rel="stylesheet" href="styles.css">
-    <script>
+    <script type="module">
+        import * as skiko from './skiko.mjs'; // Ensure the path is correct
+
         async function loadWasm() {
             try {
                 const imports = {
-                    js_code: {} // Ensure this matches the expected imports by the WASM module
+                    "./skiko.mjs": skiko
                 };
 
                 const response = await fetch('composeApp.wasm');
