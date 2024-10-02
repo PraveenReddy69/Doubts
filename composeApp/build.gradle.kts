@@ -22,18 +22,12 @@ properties.load(FileInputStream(PropertiesFile))
 
 kotlin {
 
-   /* js(IR) {
-        browser {
-            webpackTask {
-                outputFileName = "composeApp.js"
-            }
-        }
-        binaries.executable()
-    }*//**/
+
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
+        binaries.executable()
         browser {
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
@@ -99,7 +93,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.landscapist.coil3)
+            /*implementation(libs.landscapist.coil3)*/
             implementation(libs.bundles.ktor)
             //implementation(libs.ktor.client.okhttp)
              implementation(libs.ktor.client.js)
