@@ -4,28 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doubts</title>
-    <link rel="stylesheet" href="styles.css">
-    <script type="module">
-
-        async function loadWasm() {
-            const response = await fetch('composeApp.wasm');
-            const buffer = await response.arrayBuffer();
-            const module = await WebAssembly.instantiate(buffer, {
-                js_code: {
-                    print: (message) => {
-                        document.getElementById('output').innerText += message + '\n';
-                    },
-
-                }
-            });
-            module.instance.exports.start(); // Call the start function in your WASM module
-        }
-
-        loadWasm();
-    </script>
+    <link type="text/css" rel="stylesheet" href="styles.css">
+    <script type="application/javascript" src="composeApp.js"></script>
 </head>
 <body>
-<h1>Welcome to the Doubts WASM App</h1>
-<div id="output"></div>
 </body>
 </html>

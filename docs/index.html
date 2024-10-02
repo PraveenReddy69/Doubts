@@ -5,24 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doubts</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module">
-        import { /* your exports from skiko.mjs */ } from './skiko.mjs'; // Import necessary functions
-
-        async function loadWasm() {
-            const response = await fetch('./composeApp.wasm'); // Fetch the WASM file
-            const { instance } = await WebAssembly.instantiateStreaming(response, {
-                js_code: { /* your JavaScript functions to import */ }
-            });
-            // Access exported functions from the WebAssembly module
-            console.log(instance.exports);
-            document.getElementById('output').innerText = 'WASM Loaded Successfully!';
-        }
-
-        loadWasm().catch(console.error);
-    </script>
+    <script src="composeApp.js" type="application/javascript"></script>
 </head>
 <body>
-<h1>Welcome to the Doubts WASM App</h1>
-<div id="output"></div>
+<h1>Welcome to the Doubts red App</h1>
 </body>
 </html>
