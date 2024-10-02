@@ -21,6 +21,16 @@ val properties = Properties()
 properties.load(FileInputStream(PropertiesFile))
 
 kotlin {
+
+   /* js(IR) {
+        browser {
+            webpackTask {
+                outputFileName = "composeApp.js"
+            }
+        }
+        binaries.executable()
+    }*//**/
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
@@ -38,6 +48,8 @@ kotlin {
         }
         binaries.executable()
     }
+
+
 
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -189,5 +201,11 @@ compose.desktop {
             packageName = "com.infinitylearn.doubt"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+compose {
+    experimental {
+        web.application {}
     }
 }

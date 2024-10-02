@@ -261,20 +261,3 @@ fun DoubtQuestionData(mDoubtsData: List<MyQuestionResponse.QuestionData?>) {
     }
 }
 
-
-/*fun selectPhotoFromSystemWeb(onFileSelected: (File?) -> Unit) {
-    val input = document.createElement("input") as HTMLInputElement
-    input.type = "file"
-    input.accept = "image/*"  // Only allow image files
-    input.onchange = {
-        val file = input.files?.item(0)  // Get the selected file
-        onFileSelected(file)  // Pass the file back
-    }
-    input.click()  // Trigger the file dialog
-}*/
-
-
-
-
-
-
