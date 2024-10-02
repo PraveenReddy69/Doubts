@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -82,7 +84,7 @@ fun CameraTextUI(platform: String,
                         .background(color = Color.White, shape = RoundedCornerShape(5.dp))
                         .border(width = 1.dp, color = Color(0xFFFBD323))
                         .padding(vertical = 5.dp)
-                        .clickable { cameraTextUIActions.navigateToCamera() },
+                        .clickable(indication = null, interactionSource =  remember { MutableInteractionSource() } ) { cameraTextUIActions.navigateToCamera() },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -121,7 +123,7 @@ fun CameraTextUI(platform: String,
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(5.dp))
                     .border(width = 1.dp, color = hexToColor(uiConfig?.title?.strokeColor ?: "#C4A200"))
-                    .padding(vertical = 5.dp, horizontal = 10.dp).clickable { cameraTextUIActions.navigateToText() },
+                    .padding(vertical = 5.dp, horizontal = 10.dp).clickable(indication = null, interactionSource =  remember { MutableInteractionSource() } ) { cameraTextUIActions.navigateToText() },
                 horizontalAlignment = Alignment.Start
             ) {
 

@@ -5,13 +5,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import java.util.Properties
 import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.google.gms.google.services)
+
 }
 
 
@@ -21,7 +22,7 @@ properties.load(FileInputStream(PropertiesFile))
 
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
-   /* wasmJs {
+    wasmJs {
         moduleName = "composeApp"
         browser {
             val projectDirPath = project.projectDir.path
@@ -36,17 +37,17 @@ kotlin {
             }
         }
         binaries.executable()
-    }*/
-    
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -59,21 +60,21 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting{
+        val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.ktor.client.okhttp)
+                //  implementation(libs.ktor.client.okhttp)
             }
         }
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
             api(libs.androidx.core.ktx.v1120)
             implementation(libs.bundles.ktor)
-            implementation(libs.ktor.client.okhttp)
+           //  implementation(libs.ktor.client.okhttp)
 
         }
         commonMain.dependencies {
@@ -85,17 +86,24 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation (libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.landscapist.coil3)
             implementation(libs.bundles.ktor)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.firebase.database)
-            implementation(libs.firebase.database.ktx)
+            //implementation(libs.ktor.client.okhttp)
+             implementation(libs.ktor.client.js)
         }
         nativeMain.dependencies {
             implementation(libs.bundles.ktor)
             implementation(libs.ktor.client.darwin)
         }
+
+
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
+            implementation(libs.bundles.ktor) // Include common Ktor dependencies
+        }
+
+
     }
 }
 
@@ -140,17 +148,29 @@ android {
     productFlavors {
         create("prod") {
             dimension = "infinity"
-            buildConfigField("String", "DOUBTS_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+            buildConfigField(
+                "String",
+                "DOUBTS_BASE_URL",
+                "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\""
+            )
         }
 
         create("preprod") {
             dimension = "infinity"
-            buildConfigField("String", "AIMENTOR_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+            buildConfigField(
+                "String",
+                "AIMENTOR_BASE_URL",
+                "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\""
+            )
         }
 
         create("staging") {
             dimension = "infinity"
-            buildConfigField("String", "AIMENTOR_BASE_URL", "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\"")
+            buildConfigField(
+                "String",
+                "AIMENTOR_BASE_URL",
+                "\"${properties["DOUBTSAI_PREPROD_BASE_URL"]}\""
+            )
         }
     }
 
@@ -158,10 +178,7 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
-dependencies {
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.database.ktx)
-}
+
 
 compose.desktop {
     application {

@@ -9,4 +9,8 @@ class ApiService {
     fun getAllDoubts() :String{
         return getDoubtsBaseURL()+"user/getDoubtsv2"
     }
+
+    fun createDoubt() :String{
+        return getDoubtsBaseURL()+"v2/createDoubt"
+    }
 }

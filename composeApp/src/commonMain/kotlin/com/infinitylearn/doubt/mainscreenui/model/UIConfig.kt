@@ -54,7 +54,7 @@ val client = HttpClient {
 
 
 suspend fun fetchFirebaseData(): UIConfig {
-    val firebaseUrl = "https://doubts-aa0c1-default-rtdb.firebaseio.com/cameraTextUi/uiConfig.json"
+    val firebaseUrl = "https://doubts-default-rtdb.firebaseio.com/cameraTextUi/uiConfig.json"
     return client.get(firebaseUrl).body()
 }
 

@@ -1,5 +1,7 @@
 package com.infinitylearn.doubt.networking
 
+import com.infinitylearn.doubt.model.CreateDoubtRequest
+import com.infinitylearn.doubt.model.CreateDoubtResponse
 import com.infinitylearn.doubt.model.GetDoubtsRequest
 import com.infinitylearn.doubt.model.MyQuestionResponse
 import io.ktor.client.HttpClient
@@ -32,6 +34,12 @@ class DoubtsAPIClient(
             return Result.Error(NetworkError.NO_INTERNET)
         } catch (e: SerializationException) {
             return Result.Error(NetworkError.SERIALIZATION)
+        }catch (e:SocketTimeoutException){
+            println("-------------------------${e.message}")
+            return Result.Error(NetworkError.REQUEST_TIMEOUT)
+        }catch (e:Exception){
+            println("-------------------------${e.message}")
+            return Result.Error(NetworkError.UNAUTHORIZED)
         }
 
         return when (response.status.value) {
@@ -44,10 +52,14 @@ class DoubtsAPIClient(
             408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
             413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
             in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
-            else -> Result.Error(NetworkError.UNKNOWN)
+            else -> {
+                // Log detailed information about the response in case of unknown errors
+                val responseBody = response.bodyAsText()
+                println("Unknown error - Status: ${response.status.value}, Response: $responseBody")
+                Result.Error(NetworkError.UNKNOWN)
+            }
         }
     }
-
 
     suspend fun getAllDoubts(getDoubtsRequest: GetDoubtsRequest): Result<MyQuestionResponse, NetworkError> {
         val response = try {
@@ -75,6 +87,46 @@ class DoubtsAPIClient(
         return when (response.status.value) {
             in 200..299 -> {
                 val data = response.body<MyQuestionResponse>()
+                Result.Success(data)
+            }
+            401 -> Result.Error(NetworkError.UNAUTHORIZED)
+            409 -> Result.Error(NetworkError.CONFLICT)
+            408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+            413 -> Result.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+            else -> {
+                // Log detailed information about the response in case of unknown errors
+                val responseBody = response.bodyAsText()
+                println("Unknown error - Status: ${response.status.value}, Response: $responseBody")
+                Result.Error(NetworkError.UNKNOWN)
+            }
+        }
+    }
+
+
+    suspend fun createDoubt(createDoubtRequest: CreateDoubtRequest): Result<CreateDoubtResponse, NetworkError> {
+        val response = try {
+            httpClient.post(urlString = ApiService().createDoubt()) {
+                setBody(createDoubtRequest)
+
+            }
+        } catch (e: UnresolvedAddressException) {
+            println("------------AA-------------${e.message}")
+            return Result.Error(NetworkError.NO_INTERNET)
+
+        } catch (e: SerializationException) {
+            println("-------------------------${e.message}")
+            return Result.Error(NetworkError.SERIALIZATION)
+
+        }catch (e:SocketTimeoutException){
+            return Result.Error(NetworkError.REQUEST_TIMEOUT)
+        }catch (e:Exception){
+            return Result.Error(NetworkError.UNAUTHORIZED)
+        }
+
+        return when (response.status.value) {
+            in 200..299 -> {
+                val data = response.body<CreateDoubtResponse>()
                 Result.Success(data)
             }
             401 -> Result.Error(NetworkError.UNAUTHORIZED)

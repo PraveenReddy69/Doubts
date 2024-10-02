@@ -27,7 +27,6 @@ import com.infinitylearn.doubt.mainscreenui.CameraTextUIActions
 import com.infinitylearn.doubt.mainscreenui.MyQuestionUI
 import com.infinitylearn.doubt.mainscreenui.NoQuestionsFound
 import com.infinitylearn.doubt.mainscreenui.QuestionItem
-import com.infinitylearn.doubt.mainscreenui.SubjectBottomSheet
 import com.infinitylearn.doubt.mainscreenui.model.UIConfig
 import com.infinitylearn.doubt.mainscreenui.model.observeCameraTextUI
 
@@ -35,11 +34,12 @@ import com.infinitylearn.doubt.model.GetDoubtsRequest
 import com.infinitylearn.doubt.model.MyQuestionResponse
 import com.infinitylearn.doubt.networking.DoubtsAPIClient
 import com.infinitylearn.doubt.networking.SubjectGradeMappingItem
+import com.infinitylearn.doubt.textscreen.TextScreen
 import com.infinitylearn.doubt.utils.PLATFORM_DESKTOP
 import com.infinitylearn.doubt.utils.PLATFORM_WEB
 import com.infinitylearn.doubt.utils.getPlatformName
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import util.onError
 import util.onSuccess
@@ -57,8 +57,6 @@ fun App(client: DoubtsAPIClient) {
         var mDoubtsData by remember {
             mutableStateOf<List<MyQuestionResponse.QuestionData?>>(emptyList())
         }
-
-
         var currentPage by remember { mutableStateOf(1) }
         var isLoading by remember { mutableStateOf(false) }
         var hasMoreData by remember { mutableStateOf(true) }
@@ -124,6 +122,7 @@ fun App(client: DoubtsAPIClient) {
                 cameraTextUIActions = CameraTextUIActions(navigateToCamera = {
                     println("Camera Action Clicked")
                 }, navigateToText = {
+
                     showSubjectDialog = true
                     println("Text Action Clicked--------$showSubjectDialog")
                 })
@@ -133,15 +132,10 @@ fun App(client: DoubtsAPIClient) {
     }
 
 
-    println("Text Action Clicked11--------$showSubjectDialog")
+
 
     if (showSubjectDialog) {
-        SubjectBottomSheet(
-            isBottomSheet = true,
-            onDismissRequest = { showSubjectDialog = false },
-            subjects = mSubjectList
-        )
-        // SubjectDialog(isBottomSheet = true)
+        TextScreen(mSubjectList,client)
     }
 }
 
@@ -167,7 +161,7 @@ fun CollapsingToolbarLayout(
 
     // Remember scroll state for LazyColumn
     val scrollState = rememberLazyListState()
-
+    val mScope = rememberCoroutineScope()
     // LazyColumn to handle scrolling with a sticky header
     LazyColumn(
         state = scrollState, modifier = Modifier.fillMaxSize() // Properly constrain the height
@@ -181,9 +175,10 @@ fun CollapsingToolbarLayout(
             ) {
                 val platform = getPlatformName()
 
-                runBlocking {
+                mScope.launch {
                     mUiConfig = observeCameraTextUI()
                 }
+
 
                 CameraTextUI(
                     platform, uiConfig = mUiConfig, cameraTextUIActions = cameraTextUIActions
@@ -265,6 +260,18 @@ fun DoubtQuestionData(mDoubtsData: List<MyQuestionResponse.QuestionData?>) {
         }
     }
 }
+
+
+/*fun selectPhotoFromSystemWeb(onFileSelected: (File?) -> Unit) {
+    val input = document.createElement("input") as HTMLInputElement
+    input.type = "file"
+    input.accept = "image/*"  // Only allow image files
+    input.onchange = {
+        val file = input.files?.item(0)  // Get the selected file
+        onFileSelected(file)  // Pass the file back
+    }
+    input.click()  // Trigger the file dialog
+}*/
 
 
 

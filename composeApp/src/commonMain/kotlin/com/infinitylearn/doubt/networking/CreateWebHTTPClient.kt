@@ -17,20 +17,12 @@ import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-fun createHttpClient(engine: HttpClientEngine?=null): HttpClient {
-    return HttpClient(engine!!) {
+fun CreateWebHTTPClient(): HttpClient {
+    return HttpClient() {
 
         install(Logging) {
             level = LogLevel.ALL
-            logger = object : Logger {
-                override fun log(message: String) {
-                    // Print cURL request to the console
-                    println("DoubtsCurl12----> " +message)
-                    if (message.contains("Request:") || message.contains("Response:")) {
-                        println("DoubtsCurl----> " + formatCurlCommand(message))
-                    }
-                }
-            }
+
         }
 
         install(HttpTimeout){
@@ -57,29 +49,3 @@ fun createHttpClient(engine: HttpClientEngine?=null): HttpClient {
     }
 }
 
-// Function to format the cURL command
-private fun formatCurlCommand(logMessage: String): String {
-    val requestLine = logMessage.substringAfter("Request: ")
-    val method = HttpMethod.parse(requestLine.substringBefore(' ')).value
-    val url = requestLine.substringAfter("Url: ").substringBefore('\n').trim()
-
-    val headers = logMessage.substringAfter("Headers: ").substringBefore("Body:").trim()
-    val body = logMessage.substringAfter("Body:").trim()
-
-    val curlCommand = StringBuilder("curl -X $method '$url'")
-
-    // Add headers
-    headers.split('\n').forEach { header ->
-        val headerParts = header.split(':', limit = 2)
-        if (headerParts.size == 2) {
-            curlCommand.append(" -H '${headerParts[0].trim()}: ${headerParts[1].trim()}'")
-        }
-    }
-
-    // Add body if it exists
-    if (body.isNotEmpty()) {
-        curlCommand.append(" -d '$body'")
-    }
-
-    return curlCommand.toString()
-}
