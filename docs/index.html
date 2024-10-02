@@ -6,11 +6,22 @@
     <title>Doubts</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module">
-        WebAssembly.instantiateStreaming()
+        async function loadWasm() {
+            const response = await fetch('./composeApp.wasm'); // Fetch the WASM file
+            const { instance } = await WebAssembly.instantiateStreaming(response, {
+                // Import your JavaScript functions here
+                js_code: { /* your imports here */ }
+            });
+            // Access exported functions from the WebAssembly module
+            console.log(instance.exports);
+            document.getElementById('output').innerText = 'WASM Loaded Successfully!';
+        }
+
+        loadWasm().catch(console.error);
     </script>
 </head>
 <body>
-<h1>Welcome to the Doubts Reddduyud App</h1>
+<h1>Welcome to the Doubts WASM App</h1>
 <div id="output"></div>
 </body>
 </html>
