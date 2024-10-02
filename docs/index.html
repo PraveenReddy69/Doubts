@@ -8,10 +8,15 @@
     <script>
         async function loadWasm() {
             try {
+                const imports = {
+                    js_code: {} // Ensure this matches the expected imports by the WASM module
+                };
+
                 const response = await fetch('composeApp.wasm');
                 if (!response.ok) throw new Error('Failed to load WASM');
                 const wasm = await response.arrayBuffer();
-                const result = await WebAssembly.instantiate(wasm, {}); // Provide empty imports object
+                const result = await WebAssembly.instantiate(wasm, imports);
+
                 console.log('WASM loaded:', result);
             } catch (e) {
                 console.error(e);
@@ -21,6 +26,6 @@
     </script>
 </head>
 <body>
-<h1>Welcome to the Doubts Praveen App</h1>
+<h1>Welcome to the Doubts WASM App</h1>
 </body>
 </html>
