@@ -10,14 +10,7 @@
         async function loadWasm() {
             const response = await fetch('composeApp.wasm');
             const buffer = await response.arrayBuffer();
-            const module = await WebAssembly.instantiate(buffer, {
-                js_code: {
-                    print: (message) => {
-                        document.getElementById('output').innerText += message + '\n';
-                    },
-
-                }
-            });
+            WebAssembly.instantiateStreaming()
             module.instance.exports.start(); // Call the start function in your WASM module
         }
 
