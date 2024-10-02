@@ -23,7 +23,7 @@ properties.load(FileInputStream(PropertiesFile))
 kotlin {
 
 
-
+    js()
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
